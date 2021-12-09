@@ -32,29 +32,30 @@ connection.query('SELECT * from sorozat INNER JOIN mufaj ON sorozat.sorozat_mufa
 connection.end()
     
   })
-/*
-  app.post('/szavazatfelvitel', (req, res) => {
+
+  app.post('/komment', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'marveladatb'
+    database: 'vizsgamunka'
 })
 
 connection.connect()
 
-connection.query('INSERT INTO szavazat values(null,"'+req.body.bevitel1+'")', function (err, rows, fields) {
-  if (err) throw err
 
-  console.log("Szavazatát rögzítettük")
-  res.send("Szavazatát rögzítettük")
+connection.query( "INSERT INTO komment VALUES (NULL, '"+req.body.bevitel1+"')",function (err, rows, fields) {
+    if (err) throw err
+
+    res.send("Sikerült")
+    console.log("Sikerült")
 })
 
 connection.end()
-    
+
   })
-*/
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
