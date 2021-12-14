@@ -22,7 +22,7 @@ app.get('/sorozat', (req, res) => {
 
 connection.connect()
 
-connection.query('SELECT * from sorozat INNER JOIN mufaj ON sorozat.sorozat_mufaj=mufaj.mufaj_id ', function (err, rows, fields) {
+connection.query('SELECT * from sorozat INNER JOIN mufaj ON sorozat.sorozat_mufaj=mufaj.mufaj_id ORDER BY sorozat.sorozat_id', function (err, rows, fields) {
   if (err) throw err
 
   console.log(rows)
@@ -33,7 +33,7 @@ connection.end()
     
   })
 
-  app.post('/komment', (req, res) => {
+  app.post('/ajanlas', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
     host: 'localhost',
@@ -45,7 +45,7 @@ connection.end()
 connection.connect()
 
 
-connection.query( "INSERT INTO komment VALUES (NULL, '"+req.body.bevitel1+"')",function (err, rows, fields) {
+connection.query( "INSERT INTO ajanlas VALUES (NULL, '"+req.body.bevitel1+"')",function (err, rows, fields) {
     if (err) throw err
 
     res.send("Sikerült")
@@ -55,6 +55,7 @@ connection.query( "INSERT INTO komment VALUES (NULL, '"+req.body.bevitel1+"')",f
 connection.end()
 
   })
+
 
 
 app.listen(port, () => {
