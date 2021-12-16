@@ -33,6 +33,28 @@ connection.end()
     
   })
 
+  app.get('/kommentek', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+})
+
+connection.connect()
+
+connection.query('SELECT * from komment', function (err, rows, fields) {
+  if (err) throw err
+
+  console.log(rows)
+  res.send(rows)
+})
+
+connection.end()
+    
+  })
+
   app.post('/ajanlas', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -55,6 +77,32 @@ connection.query( "INSERT INTO ajanlas VALUES (NULL, '"+req.body.bevitel1+"')",f
 connection.end()
 
   })
+
+  app.post('/kommentfelvitel', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+})
+
+connection.connect()
+
+
+
+connection.query( "INSERT INTO komment VALUES (NULL, '"+req.body.bevitel1+"', '"+req.body.bevitel2+"');",function (err, rows, fields) {
+    if (err) throw err
+
+    res.send("Sikerült")
+    console.log("Sikerült")
+})
+
+connection.end()
+
+  })
+
+
 
 
 
