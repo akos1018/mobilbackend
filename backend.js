@@ -32,6 +32,28 @@ connection.query('SELECT * from sorozat INNER JOIN mufaj ON sorozat.sorozat_mufa
 connection.end()
     
   })
+
+  app.get('/film', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+})
+
+connection.connect()
+
+connection.query('SELECT * from filmek INNER JOIN film_mufajok ON filmek.film_mufaj=film_mufajok.mufaj_id ORDER BY filmek.film_id', function (err, rows, fields) {
+  if (err) throw err
+
+  console.log(rows)
+  res.send(rows)
+})
+
+connection.end()
+    
+  })
   
   app.get('/mufaj', (req, res) => {
     var mysql = require('mysql')
@@ -54,6 +76,29 @@ connection.query('SELECT * from mufaj ', function (err, rows, fields) {
 connection.end()
     
   })
+
+  app.get('/filmmufaj', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+})
+
+connection.connect()
+
+connection.query('SELECT * from film_mufajok ', function (err, rows, fields) {
+  if (err) throw err
+
+  console.log(rows)
+  res.send(rows)
+})
+
+connection.end()
+    
+  })
+
 
   app.post('/kommentek', (req, res) => {
     var mysql = require('mysql')
@@ -144,6 +189,27 @@ connection.end()
   
   connection.end()
   })
+
+  app.post('/filmkereses', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  let sz='SELECT * from filmek INNER JOIN film_mufajok ON filmek.film_mufaj=film_mufajok.mufaj_id WHERE filmek.film_cim like "%'+req.body.bevitel1+'%"';
+    connection.query(sz, function (err, rows, fields) {
+  if (err) throw err
+  
+    console.log(rows)
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
   
   
   app.post('/sorozatszures', (req, res) => {
@@ -167,6 +233,29 @@ connection.end()
   
   connection.end()
   })
+
+  app.post('/filmszures', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  
+  connection.query('SELECT * from filmek INNER JOIN film_mufajok ON filmek.film_mufaj=film_mufajok.mufaj_id WHERE filmek.film_mufaj ='+ req.body.bevitel2, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
+  
   
   app.post('/sorozatkep', (req, res) => {
     var mysql = require('mysql')
@@ -180,6 +269,28 @@ connection.end()
   connection.connect()
   
   connection.query('SELECT sorozat.sorozat_kep from sorozat WHERE sorozat.sorozat_id ='+req.body.bevitel3, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
+  
+  app.post('/filmkep', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  
+  connection.query('SELECT filmek.film_kep from filmek WHERE filmek.film_id ='+req.body.bevitel3, function (err, rows, fields) {
     if (err) throw err
   
     console.log(rows)
