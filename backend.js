@@ -11,6 +11,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static(('kepek')))
 
+//-----------------------------------------------SOROZATOK LEKÉRDEZÉSE
 app.get('/sorozat', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -32,7 +33,7 @@ connection.query('SELECT * from sorozat INNER JOIN mufaj ON sorozat.sorozat_mufa
 connection.end()
     
   })
-
+//-----------------------------------------------FILMEK LEKÉRDEZÉSE
   app.get('/film', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -54,7 +55,8 @@ connection.query('SELECT * from filmek INNER JOIN film_mufajok ON filmek.film_mu
 connection.end()
     
   })
-  
+
+//-----------------------------------------------SOROZAT MŰFAJOK LEKÉRDEZÉSE
   app.get('/mufaj', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -76,7 +78,7 @@ connection.query('SELECT * from mufaj ', function (err, rows, fields) {
 connection.end()
     
   })
-
+//-----------------------------------------------FILM LEKÉRDEZÉSE
   app.get('/filmmufaj', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -99,7 +101,7 @@ connection.end()
     
   })
 
-
+//-----------------------------------------------SOROZAT KOMMENTEK LEKÉRDEZÉSE
   app.post('/kommentek', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -121,7 +123,7 @@ connection.query('SELECT * from komment WHERE komment.komment_sorozat_id ='+req.
 connection.end()
     
   })
-
+//-----------------------------------------------FILM KOMMENTEK LEKÉRDEZÉSE
   app.post('/filmkommentek', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -143,7 +145,7 @@ connection.query('SELECT * from film_komment WHERE film_komment.film_komment_fil
 connection.end()
     
   })
-
+//-----------------------------------------------AJÁNLÁS LEKÉRDEZÉSE
   app.post('/ajanlas', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -167,6 +169,7 @@ connection.end()
 
   })
 
+//-----------------------------------------------SOROZAT KOMMENT FELVITEL 
   app.post('/kommentfelvitel', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -191,6 +194,7 @@ connection.end()
 
   })
 
+//-----------------------------------------------FILM KOMMENTEK FELVITELE 
   app.post('/filmkommentfelvitel', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -215,7 +219,7 @@ connection.end()
 
   })
 
-
+//-----------------------------------------------KERESÉS SOROZATOK KÖZÖTT 
   app.post('/kereses', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -237,6 +241,7 @@ connection.end()
   connection.end()
   })
 
+//-----------------------------------------------KERESÉS FILMEK KÖZÖTT
   app.post('/filmkereses', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -258,7 +263,8 @@ connection.end()
   connection.end()
   })
   
-  
+
+//-----------------------------------------------SOROZATOK MŰFAJ SZŰRÉSE
   app.post('/sorozatszures', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -281,6 +287,8 @@ connection.end()
   connection.end()
   })
 
+
+//-----------------------------------------------ÉV SZERINTI SZŰRÉS (NEM HASZNÁLT JELENLEG)
   app.post('/evszures', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -302,6 +310,7 @@ connection.end()
   connection.end()
   })
 
+  //-----------------------------------------------FILMEK MŰFAJ SZERINTI SZŰRÉSE 
   app.post('/filmszures', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -325,6 +334,7 @@ connection.end()
   })
   
   
+//-----------------------------------------------SOROZAT KÉPEK LEKÉRDEZÉSE
   app.post('/sorozatkep', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -347,6 +357,8 @@ connection.end()
   connection.end()
   })
   
+
+//-----------------------------------------------FILM KÉPEK LEKÉRDEZÉSE
   app.post('/filmkep', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -369,6 +381,7 @@ connection.end()
   connection.end()
   })
 
+  //-----------------------------------------------SOROZATOK ÉRTÉKELÉSE
   app.post('/ertekeles', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -392,6 +405,7 @@ connection.end()
 
   })
 
+  //-----------------------------------------------FILMEK ÉRTÉKELÉSE
   app.post('/filmertekeles', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -415,6 +429,8 @@ connection.end()
 
   })
 
+
+  //-----------------------------------------------SOROZATOK ÁTLAGÉRTÉKE
   app.post('/atlagertek', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -437,6 +453,8 @@ connection.end()
   connection.end()
   })
 
+
+  //-----------------------------------------------FILMEK ÁTLAGÉRTÉKE
   app.post('/filmatlagertek', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
@@ -457,6 +475,74 @@ connection.end()
   })
   
   connection.end()
+  })
+
+  //-----------------------------------------------TOP 5 FILM
+  app.get('/legjobbfilmek', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  let sz = 'SELECT  * ,AVG(film_ertekeles.film_ertekeles_ertek) AS atlag FROM film_ertekeles INNER JOIN filmek ON filmek.film_id=film_ertekeles.film_ertekeles_film_id WHERE film_ertekeles.film_ertekeles_film_id GROUP BY filmek.film_cim ORDER BY (atlag)  DESC LIMIT 5 ';
+  connection.query(sz, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
+
+  //-----------------------------------------------TOP 5 SOROZAT
+  app.get('/legjobbsorozatok', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  let sz = 'SELECT * ,AVG(ertekeles.ertekeles_ertek) AS atlag FROM ertekeles INNER JOIN sorozat ON sorozat.sorozat_id=ertekeles.ertekeles_sorozat_id WHERE ertekeles.ertekeles_sorozat_id GROUP BY sorozat.sorozat_cim ORDER BY (atlag)  DESC LIMIT 5';
+  connection.query(sz, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
+
+  app.get('/legujabbsorozat', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+})
+
+connection.connect()
+
+connection.query('SELECT * from sorozat WHERE sorozat_ev = 2021 ORDER BY sorozat_ev DESC  ', function (err, rows, fields) {
+  if (err) throw err
+
+  console.log(rows)
+  res.send(rows)
+})
+
+connection.end()
+    
   })
   
 
