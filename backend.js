@@ -488,7 +488,7 @@ connection.end()
   })
   
   connection.connect()
-  let sz = 'SELECT  * ,AVG(film_ertekeles.film_ertekeles_ertek) AS atlag FROM film_ertekeles INNER JOIN filmek ON filmek.film_id=film_ertekeles.film_ertekeles_film_id WHERE film_ertekeles.film_ertekeles_film_id GROUP BY filmek.film_cim ORDER BY (atlag)  DESC LIMIT 5 ';
+  let sz = 'SELECT  * ,AVG(film_ertekeles.film_ertekeles_ertek) AS atlag FROM film_ertekeles INNER JOIN filmek ON filmek.film_id=film_ertekeles.film_ertekeles_film_id INNER JOIN film_mufajok ON filmek.film_mufaj = film_mufajok.mufaj_id GROUP BY filmek.film_cim ORDER BY (atlag)  DESC LIMIT 5;';
   connection.query(sz, function (err, rows, fields) {
     if (err) throw err
   
@@ -501,7 +501,7 @@ connection.end()
   })
 
   //-----------------------------------------------TOP 5 SOROZAT
-  app.get('/legjobbsorozatok', (req, res) => {
+  app.get('/legjobbfilmek', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
     host: 'localhost',
@@ -511,7 +511,7 @@ connection.end()
   })
   
   connection.connect()
-  let sz = 'SELECT * ,AVG(ertekeles.ertekeles_ertek) AS atlag FROM ertekeles INNER JOIN sorozat ON sorozat.sorozat_id=ertekeles.ertekeles_sorozat_id WHERE ertekeles.ertekeles_sorozat_id GROUP BY sorozat.sorozat_cim ORDER BY (atlag)  DESC LIMIT 5';
+  let sz = 'SELECT  * ,AVG(film_ertekeles.film_ertekeles_ertek) AS atlag FROM film_ertekeles INNER JOIN filmek ON filmek.film_id=film_ertekeles.film_ertekeles_film_id  INNER JOIN film_mufajok ON filmek.film_mufaj = film_mufajok.mufaj_id GROUP BY filmek.film_cim ORDER BY (atlag)  DESC LIMIT 5 ';
   connection.query(sz, function (err, rows, fields) {
     if (err) throw err
   
@@ -522,29 +522,72 @@ connection.end()
   
   connection.end()
   })
-
-  app.get('/legujabbsorozat', (req, res) => {
+  
+  app.get('/legjobbsorozatok', (req, res) => {
     var mysql = require('mysql')
     var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'vizsgamunka'
-})
-
-connection.connect()
-
-connection.query('SELECT * from sorozat WHERE sorozat_ev = 2021 ORDER BY sorozat_ev DESC  ', function (err, rows, fields) {
-  if (err) throw err
-
-  console.log(rows)
-  res.send(rows)
-})
-
-connection.end()
-    
   })
   
+  connection.connect()
+  let sz = 'SELECT * ,AVG(ertekeles.ertekeles_ertek) AS atlag FROM ertekeles INNER JOIN sorozat ON sorozat.sorozat_id=ertekeles.ertekeles_sorozat_id INNER JOIN mufaj ON mufaj.mufaj_id = sorozat.sorozat_mufaj WHERE ertekeles.ertekeles_sorozat_id GROUP BY sorozat.sorozat_cim ORDER BY (atlag)  DESC LIMIT 5';
+  connection.query(sz, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
+  
+  app.get('/legfrissebbfilmek', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  let sz = 'SELECT  * FROM filmek INNER JOIN film_mufajok ON filmek.film_mufaj = film_mufajok.mufaj_id ORDER BY filmek.film_ev DESC LIMIT 5 ';
+  connection.query(sz, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
+  
+  app.get('/legfrissebbsorozatok', (req, res) => {
+    var mysql = require('mysql')
+    var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'vizsgamunka'
+  })
+  
+  connection.connect()
+  let sz = 'SELECT  * FROM sorozat INNER JOIN mufaj ON mufaj.mufaj_id = sorozat.sorozat_mufaj ORDER BY sorozat.sorozat_ev DESC LIMIT 5 ';
+  connection.query(sz, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    
+    res.send(rows)
+  })
+  
+  connection.end()
+  })
 
 
 
